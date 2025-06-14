@@ -6,9 +6,13 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 
-// ✅ Serve static files from /public
-app.use(express.static(path.join(__dirname, 'public')));
-// === GET route to fetch all records
+// === MongoDB schema + model ===
+const testSchema = new mongoose.Schema({ name: String });
+const Test = mongoose.model("Test", testSchema);
+
+// === API Routes ===
+
+// GET route to fetch all records
 app.get("/test", async (req, res) => {
   try {
     const records = await Test.find();
@@ -18,19 +22,13 @@ app.get("/test", async (req, res) => {
   }
 });
 
-// === MongoDB schema + model
-const testSchema = new mongoose.Schema({ name: String });
-const Test = mongoose.model("Test", testSchema);
-
-// === POST route to insert data
+// POST route to insert data
 app.post("/test", async (req, res) => {
   try {
     const { name } = req.body;
-
     if (!name || typeof name !== "string" || !name.trim()) {
-      return res.status(400).json({ error: "Name is required and must be a non-empty string." });
+      return res.status(400).json({ error: "Name is required" });
     }
-
     const doc = await Test.create({ name });
     res.json(doc);
   } catch (err) {
@@ -38,7 +36,15 @@ app.post("/test", async (req, res) => {
   }
 });
 
-// === Connect to MongoDB and start the server
+// === Serve static files from /public ===
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve index.html on root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// === Connect to MongoDB and start server ===
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

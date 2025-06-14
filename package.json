@@ -8,9 +8,8 @@
     "dotenv": "^10.0.0"
   },
   "scripts": {
-  "start": "node src/server.js"
-}
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "start": "node src/server.js"
   },
   "engines": {
     "node": ">=14.0.0"

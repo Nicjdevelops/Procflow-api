@@ -2,9 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
+const cors = require("cors");
 
 const app = express();
-app.use(express.json());
+
+// === Middleware ===
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON body
 
 // === MongoDB schema + model ===
 const testSchema = new mongoose.Schema({ name: String });
@@ -25,12 +29,13 @@ app.get("/test", async (req, res) => {
 // POST route to insert data
 app.post("/test", async (req, res) => {
   try {
-    console.log("POST /test hit:", req.body); // ✅ Log inside JS
+    console.log("POST /test hit:", req.body);
 
     const { name } = req.body;
     if (!name || typeof name !== "string" || !name.trim()) {
       return res.status(400).json({ error: "Name is required" });
     }
+
     const doc = await Test.create({ name });
     res.json(doc);
   } catch (err) {
@@ -41,7 +46,7 @@ app.post("/test", async (req, res) => {
 // === Serve static files from /public ===
 app.use(express.static(path.join(__dirname, "public")));
 
-// Serve index.html on root
+// Fallback to index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -54,7 +59,7 @@ mongoose
   })
   .then(() => {
     app.listen(process.env.PORT || 5000, () => {
-      console.log("Server running");
+      console.log("Server running on port", process.env.PORT || 5000);
     });
   })
   .catch((err) => {

@@ -20,8 +20,10 @@ const Test = mongoose.model("Test", testSchema);
 app.get("/test", async (req, res) => {
   try {
     const records = await Test.find();
+    console.log("Fetched records:", records);  // ✅ Add this
     res.json(records);
   } catch (err) {
+    console.error("GET error:", err);  // ✅ Add this
     res.status(500).json({ error: err.message });
   }
 });
@@ -33,12 +35,15 @@ app.post("/test", async (req, res) => {
 
     const { name } = req.body;
     if (!name || typeof name !== "string" || !name.trim()) {
+      console.log("Invalid input.");
       return res.status(400).json({ error: "Name is required" });
     }
 
     const doc = await Test.create({ name });
+    console.log("Saved to DB:", doc);  // ✅ Add this
     res.json(doc);
   } catch (err) {
+    console.error("POST error:", err); // ✅ Log errors
     res.status(500).json({ error: err.message });
   }
 });

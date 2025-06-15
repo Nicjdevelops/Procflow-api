@@ -25,6 +25,8 @@ app.get("/test", async (req, res) => {
 // POST route to insert data
 app.post("/test", async (req, res) => {
   try {
+    console.log("POST /test hit:", req.body); // ✅ Log inside JS
+
     const { name } = req.body;
     if (!name || typeof name !== "string" || !name.trim()) {
       return res.status(400).json({ error: "Name is required" });

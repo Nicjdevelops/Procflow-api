@@ -37,10 +37,9 @@ app.post("/test", async (req, res) => {
 
 // === Serve static frontend files ===
 // This assumes 'public' is at the same level as 'src'
-app.use(express.static(path.join(__dirname, "../public")));
-
+app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // === Connect to MongoDB and start server ===
